@@ -233,7 +233,7 @@ class Predictor(BasePredictor):
     def predict(
         self,
         input_image: Path = Input(description="Input Image"),
-        prompt: str = Input(default="a man facing the camera, making a hand gesture, indoor"),
+        prompt: str = Input(default="a person facing the camera, making a hand gesture, indoor"),
         seed: int = Input(default=1),
     ) -> Path:
         output_image = inference(input_image, prompt, seed, self.model)
