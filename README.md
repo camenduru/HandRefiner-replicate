@@ -12,7 +12,7 @@ https://github.com/wenquanlu/HandRefiner
 https://arxiv.org/abs/2311.17957
 
 ### 🖼 Output
-
+![Screenshot 2024-02-07 012444](https://github.com/camenduru/HandRefiner-replicate/assets/54370274/a044fd7d-fa81-4d34-8083-648a6c13c348)
 
 ### 🏢 Sponsor
 https://replicate.com
