@@ -1,0 +1,27 @@
+build:
+  gpu: false
+  python_version: "3.10"
+  run:
+    - apt update -y && apt install -y software-properties-common python3-launchpadlib && apt update -y && add-apt-repository -y ppa:git-core/ppa && apt update -y
+    - apt install -y gcc g++ aria2 git git-lfs wget libgl1 libglib2.0-0 ffmpeg cmake libgtk2.0-0 libopenmpi-dev
+    - pip install torch==2.1.0+cu121 torchvision==0.16.0+cu121 torchaudio==2.1.0+cu121 torchtext==0.16.0 torchdata==0.7.0 --extra-index-url https://download.pytorch.org/whl/cu121 -U
+    - pip install notebook pyngrok pickleshare ipywidgets imageio-ffmpeg numpy pandas 
+    - pip install pytorch-lightning omegaconf einops yacs trimesh mediapipe rtree boto3 gradio==3.50.2
+    - git config --global http.sslVerify false && pip install git+https://gitlab.eecs.umich.edu/ngv-python-modules/opendr
+    - pip install https://download.pytorch.org/whl/cu121/xformers-0.0.22.post7-cp310-cp310-manylinux2014_x86_64.whl
+    - GIT_LFS_SKIP_SMUDGE=1 git clone -b dev https://github.com/camenduru/HandRefiner /content/HandRefiner
+    - git clone -b dev --recursive https://github.com/camenduru/MeshGraphormer /content/HandRefiner/MeshGraphormer && cd /content/HandRefiner/MeshGraphormer && pip install -e . && pip install -e ./manopth/.
+    - aria2c --console-log-level=error -c -x 16 -s 16 -k 1M https://huggingface.co/camenduru/HandRefiner/resolve/main/basicModel_neutral_lbs_10_207_0_v1.0.0.pkl -d /content/HandRefiner/MeshGraphormer/src/modeling/data -o basicModel_neutral_lbs_10_207_0_v1.0.0.pkl
+    - aria2c --console-log-level=error -c -x 16 -s 16 -k 1M https://huggingface.co/camenduru/HandRefiner/resolve/main/MANO_RIGHT.pkl -d /content/HandRefiner/MeshGraphormer/src/modeling/data -o MANO_RIGHT.pkl
+    - aria2c --console-log-level=error -c -x 16 -s 16 -k 1M https://huggingface.co/camenduru/HandRefiner/resolve/main/graphormer_release/graphormer_3dpw_state_dict.bin -d /content/HandRefiner/MeshGraphormer/models/graphormer_release -o graphormer_3dpw_state_dict.bin
+    - aria2c --console-log-level=error -c -x 16 -s 16 -k 1M https://huggingface.co/camenduru/HandRefiner/resolve/main/graphormer_release/graphormer_h36m_state_dict.bin -d /content/HandRefiner/MeshGraphormer/models/graphormer_release -o graphormer_h36m_state_dict.bin
+    - aria2c --console-log-level=error -c -x 16 -s 16 -k 1M https://huggingface.co/camenduru/HandRefiner/resolve/main/graphormer_release/graphormer_hand_state_dict.bin -d /content/HandRefiner/MeshGraphormer/models/graphormer_release -o graphormer_hand_state_dict.bin
+    - aria2c --console-log-level=error -c -x 16 -s 16 -k 1M https://huggingface.co/camenduru/HandRefiner/raw/main/hrnet/cls_hrnet_w40_sgd_lr5e-2_wd1e-4_bs32_x100.yaml -d /content/HandRefiner/MeshGraphormer/models/hrnet -o cls_hrnet_w40_sgd_lr5e-2_wd1e-4_bs32_x100.yaml
+    - aria2c --console-log-level=error -c -x 16 -s 16 -k 1M https://huggingface.co/camenduru/HandRefiner/raw/main/hrnet/cls_hrnet_w64_sgd_lr5e-2_wd1e-4_bs32_x100.yaml -d /content/HandRefiner/MeshGraphormer/models/hrnet -o cls_hrnet_w64_sgd_lr5e-2_wd1e-4_bs32_x100.yaml
+    - aria2c --console-log-level=error -c -x 16 -s 16 -k 1M https://huggingface.co/camenduru/HandRefiner/resolve/main/hrnet/hrnetv2_w40_imagenet_pretrained.pth -d /content/HandRefiner/MeshGraphormer/models/hrnet -o hrnetv2_w40_imagenet_pretrained.pth
+    - aria2c --console-log-level=error -c -x 16 -s 16 -k 1M https://huggingface.co/camenduru/HandRefiner/resolve/main/hrnet/hrnetv2_w64_imagenet_pretrained.pth -d /content/HandRefiner/MeshGraphormer/models/hrnet -o hrnetv2_w64_imagenet_pretrained.pth
+    - aria2c --console-log-level=error -c -x 16 -s 16 -k 1M https://huggingface.co/camenduru/HandRefiner/resolve/main/hand_landmarker.task -d /content/HandRefiner/preprocessor -o hand_landmarker.task
+    - aria2c --console-log-level=error -c -x 16 -s 16 -k 1M https://huggingface.co/camenduru/HandRefiner/resolve/main/inpaint_depth_control.ckpt -d /content/HandRefiner/models -o inpaint_depth_control.ckpt
+    - aria2c --console-log-level=error -c -x 16 -s 16 -k 1M https://huggingface.co/camenduru/HandRefiner/resolve/main/ckpt200-multisc-pred.zip -d /content/HandRefiner/MeshGraphormer/predictions -o ckpt200-multisc-pred.zip
+    - mkdir /content/HandRefiner/output
+predict: "predict.py:Predictor"
