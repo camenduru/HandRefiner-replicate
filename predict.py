@@ -45,7 +45,7 @@ transform = transforms.Compose([
                         mean=[0.485, 0.456, 0.406],
                         std=[0.229, 0.224, 0.225])])
 
-def inference(image_path, prompt, seed, model):
+def inference(image_path, prompt, seed, strength, model):
     meshgraphormer = MeshGraphormerMediapipe()
     image = np.array(Image.open(image_path))
     raw_image = image
@@ -65,7 +65,7 @@ def inference(image_path, prompt, seed, model):
     guess_mode = False
     adaptive_control = False
     eval=False
-    strength = 0.55
+    strength = strength
     scale = 9.0
 
     a_prompt = "realistic, best quality, extremely detailed"
@@ -235,6 +235,7 @@ class Predictor(BasePredictor):
         input_image: Path = Input(description="Input Image"),
         prompt: str = Input(default="a person facing the camera, making a hand gesture, indoor"),
         seed: int = Input(default=1),
+        strength: float = Input(description="Strength", default=0.55, ge=0.0, le=1.0),
     ) -> Path:
-        output_image = inference(input_image, prompt, seed, self.model)
+        output_image = inference(input_image, prompt, seed, strength, self.model)
         return Path(output_image)
