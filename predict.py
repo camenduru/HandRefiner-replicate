@@ -65,7 +65,7 @@ def inference(image_path, prompt, seed, model):
     guess_mode = False
     adaptive_control = False
     eval=False
-    strength = 1.0
+    strength = 0.55
     scale = 9.0
 
     a_prompt = "realistic, best quality, extremely detailed"
